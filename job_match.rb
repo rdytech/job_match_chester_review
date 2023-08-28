@@ -1,12 +1,15 @@
 require "csv"
 
+jobseekers_csv_path = ARGV[0] || "jobseekers.csv"
+jobs_csv_path = ARGV[1] || "jobs.csv"
+
 jobseekers_arr = []
-CSV.foreach("jobseekers.csv", headers: true) do |row|
+CSV.foreach(jobseekers_csv_path, headers: true) do |row|
   jobseekers_arr.push({ id: row["id"], name: row["name"], skills: row["skills"].split(",") })
 end
 
 jobs_arr = []
-CSV.foreach("jobs.csv", headers: true) do |row|
+CSV.foreach(jobs_csv_path, headers: true) do |row|
   jobs_arr.push({ id: row["id"], title: row["title"], required_skills: row["required_skills"].split(",") })
 end
 
