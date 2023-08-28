@@ -31,8 +31,15 @@ jobseekers_arr.each do |jobseeker|
   end
 
   temp_arr.sort_by! { |j| [ -j[:matching_skill_percent], j[:job_id] ]}
-  
-  recommendations_arr.push(temp_arr)
+
+  recommendations_arr.push(*temp_arr)
 end
 
-puts recommendations_arr
+headers = ["jobseeker_id", "jobseeker_name", "job_id", "job_title", "matching_skill_count", "matching_skill_percent"]
+
+CSV.open("output.csv", "w", write_headers: true, headers: headers) do |csv|
+  recommendations_arr.each do |row|
+    puts row
+    csv << row.values
+  end
+end
