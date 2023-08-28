@@ -39,7 +39,6 @@ headers = ["jobseeker_id", "jobseeker_name", "job_id", "job_title", "matching_sk
 
 CSV.open("output.csv", "w", write_headers: true, headers: headers) do |csv|
   recommendations_arr.each do |row|
-    puts row
     csv << row.values
   end
 end
