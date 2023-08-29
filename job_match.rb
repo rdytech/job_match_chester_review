@@ -12,23 +12,20 @@ jobs_arr = CSV.read(jobs_csv_path, headers: true).map do |row|
 end
 
 recommendations_arr = jobseekers_arr.flat_map do |jobseeker|
-  temp_arr = []
-
-  jobs_arr.each do |job|
+  temp_arr = jobs_arr.flat_map do |job|
     matching_skills = jobseeker[:skills].intersection(job[:required_skills])
     matching_skill_count = matching_skills.length
     matching_skill_percent = (matching_skill_count.to_f / job[:required_skills].length) * 100
 
-    temp_arr.push({
+    {
       jobseeker_id: jobseeker[:id].to_i,
       jobseeker_name: jobseeker[:name],
       job_id: job[:id].to_i,
       job_title: job[:title],
       matching_skill_count: matching_skill_count,
       matching_skill_percent: matching_skill_percent.round(2)
-    })
+    }
   end
-
   temp_arr.sort_by! { |j| [ -j[:matching_skill_percent], j[:job_id] ]}
 end
 
