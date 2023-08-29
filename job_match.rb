@@ -1,13 +1,33 @@
 require "csv"
+require "optparse"
 
-jobseekers_csv_path = ARGV[0] || "jobseekers.csv"
-jobs_csv_path = ARGV[1] || "jobs.csv"
+options = {
+  output_path: "output.csv",
+  jobseekers_csv_path: "jobseekers.csv",
+  jobs_csv_path: "jobs.csv"
+}
 
-jobseekers_arr = CSV.read(jobseekers_csv_path, headers: true).map do |row|
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
+
+  opts.on("-s INPUT", "--jobseekers INPUT", "Path to jobseekers.csv") do |input|
+    options[:jobseekers_csv_path] = input
+  end
+
+  opts.on("-j INPUT", "--jobs INPUT", "Path to jobs.csv") do |input|
+    options[:jobs_csv_path] = input
+  end
+
+  opts.on("-o INPUT", "--output INPUT", "Select output file") do |o|
+    options[:output_path] = o.to_s
+  end
+end.parse!
+
+jobseekers_arr = CSV.read(options[:jobseekers_csv_path], headers: true).map do |row|
   { id: row["id"], name: row["name"], skills: row["skills"].split(",") }
 end
 
-jobs_arr = CSV.read(jobs_csv_path, headers: true).map do |row|
+jobs_arr = CSV.read(options[:jobs_csv_path], headers: true).map do |row|
   { id: row["id"], title: row["title"], required_skills: row["required_skills"].split(",") }
 end
 
@@ -30,6 +50,6 @@ recommendations_arr = jobseekers_arr.flat_map do |jobseeker|
 end
 
 headers = ["jobseeker_id", "jobseeker_name", "job_id", "job_title", "matching_skill_count", "matching_skill_percent"]
-CSV.open("output.csv", "w", write_headers: true, headers: headers) do |csv|
+CSV.open(options[:output_path], "w", write_headers: true, headers: headers) do |csv|
   recommendations_arr.each { |row| csv << row.values }
 end
