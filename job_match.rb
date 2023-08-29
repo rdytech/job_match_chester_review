@@ -10,17 +10,29 @@ class JobMatch
     self.output_path = output_path
   end
 
-  def match_jobs
-    jobseekers_arr = CSV.read(jobseekers_csv_path, headers: true).map do |row|
+  def call
+    load_csvs
+    
+    match_jobs
+    
+    write_to_csv
+  end
+  
+  private
+  
+  def load_csvs
+    @jobseekers_arr = CSV.read(jobseekers_csv_path, headers: true).map do |row|
       { id: row["id"], name: row["name"], skills: row["skills"].split(",") }
     end
-
-    jobs_arr = CSV.read(jobs_csv_path, headers: true).map do |row|
+  
+    @jobs_arr = CSV.read(jobs_csv_path, headers: true).map do |row|
       { id: row["id"], title: row["title"], required_skills: row["required_skills"].split(",") }
     end
+  end
 
-    recommendations_arr = jobseekers_arr.flat_map do |jobseeker|
-      temp_arr = jobs_arr.flat_map do |job|
+  def match_jobs
+    @recommendations_arr = @jobseekers_arr.flat_map do |jobseeker|
+      temp_arr = @jobs_arr.flat_map do |job|
         matching_skills = jobseeker[:skills].intersection(job[:required_skills])
         matching_skill_count = matching_skills.length
         matching_skill_percent = (matching_skill_count.to_f / job[:required_skills].length) * 100
@@ -36,10 +48,12 @@ class JobMatch
       end
       temp_arr.sort_by! { |j| [ -j[:matching_skill_percent], j[:job_id] ]}
     end
+  end
 
+  def write_to_csv
     headers = ["jobseeker_id", "jobseeker_name", "job_id", "job_title", "matching_skill_count", "matching_skill_percent"]
     CSV.open(output_path, "w", write_headers: true, headers: headers) do |csv|
-      recommendations_arr.each { |row| csv << row.values }
+      @recommendations_arr.each { |row| csv << row.values }
     end
   end
 end
@@ -65,4 +79,4 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-JobMatch.new(options[:jobs_csv_path], options[:jobseekers_csv_path], options[:output_path]).match_jobs
+JobMatch.new(options[:jobs_csv_path], options[:jobseekers_csv_path], options[:output_path]).call

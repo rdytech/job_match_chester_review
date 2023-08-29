@@ -11,7 +11,7 @@ RSpec.describe "Job Match" do
     end
 
     it "outputs the correct CSV" do
-        JobMatch.new(jobs_csv_path, jobseekers_csv_path, output_path).match_jobs
+        JobMatch.new(jobs_csv_path, jobseekers_csv_path, output_path).call
         correct_output = File.read(correct_output_path)
         output = File.read(output_path)
         expect(output).to eq(correct_output)
