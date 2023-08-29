@@ -40,3 +40,17 @@ ruby job_match.rb -o ~/matched.csv
 ```
 
 This will output the results to a file named 'matched.csv' in the User's home directory
+
+### Tests:
+
+RSpec is used for testing. Install with:
+
+```
+gem install rspec
+```
+
+Then run the test with:
+
+```
+rspec spec/job_match_spec.rb
+```
