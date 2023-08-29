@@ -10,28 +10,25 @@ ruby job_match.rb
 
 This will read two files by default: jobseekers.csv and jobs.csv. The output will be in output.csv
 
-If you wish to use custom paths you can use the following flags:
+If you wish to use custom paths you can use the following flags
 
+##### Specifies the path for the Job input
 ```
 -j
 --jobs
 ```
 
-Specifies the path for the Job input
-
+##### Specifies the path for the Job Seekers input
 ```
 -s
 ---jobseekers
 ```
 
-Specifies the path for the Job Seekers input
-
+##### Specifies the path for the output csv:
 ```
 -o
 --output
 ```
-
-Specifies the path for the output csv
 
 #### Example:
 
