@@ -11,9 +11,7 @@ jobs_arr = CSV.read(jobs_csv_path, headers: true).map do |row|
   { id: row["id"], title: row["title"], required_skills: row["required_skills"].split(",") }
 end
 
-recommendations_arr = []
-jobseekers_arr.each do |jobseeker|
-
+recommendations_arr = jobseekers_arr.flat_map do |jobseeker|
   temp_arr = []
 
   jobs_arr.each do |job|
@@ -32,8 +30,6 @@ jobseekers_arr.each do |jobseeker|
   end
 
   temp_arr.sort_by! { |j| [ -j[:matching_skill_percent], j[:job_id] ]}
-
-  recommendations_arr.push(*temp_arr)
 end
 
 headers = ["jobseeker_id", "jobseeker_name", "job_id", "job_title", "matching_skill_count", "matching_skill_percent"]
