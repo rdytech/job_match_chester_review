@@ -33,9 +33,6 @@ recommendations_arr = jobseekers_arr.flat_map do |jobseeker|
 end
 
 headers = ["jobseeker_id", "jobseeker_name", "job_id", "job_title", "matching_skill_count", "matching_skill_percent"]
-
 CSV.open("output.csv", "w", write_headers: true, headers: headers) do |csv|
-  recommendations_arr.each do |row|
-    csv << row.values
-  end
+  recommendations_arr.each { |row| csv << row.values }
 end
